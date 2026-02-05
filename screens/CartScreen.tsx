@@ -5,6 +5,7 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
+  SafeAreaView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCart } from '../contexts/CartContext';
@@ -14,18 +15,32 @@ export default function CartScreen({ navigation }: any) {
   const items = Object.values(cart);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Your Cart</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Your Cart</Text>
+        <Text style={styles.itemCount}>
+          {items.length} {items.length === 1 ? 'item' : 'items'}
+        </Text>
+      </View>
 
       <FlatList
         data={items}
         keyExtractor={item => item.id}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={styles.listContent}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Ionicons name="cart-outline" size={64} color="#ccc" />
+            <Text style={styles.emptyText}>Your cart is empty</Text>
+          </View>
+        }
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <View>
+            <View style={styles.itemInfo}>
               <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.price}>₱{item.price}</Text>
+              <Text style={styles.price}>₱{item.price} each</Text>
+              <Text style={styles.subtotal}>
+                Subtotal: ₱{item.price * (item.quantity ?? 0)}
+              </Text>
             </View>
 
             <View style={styles.quantityRow}>
@@ -52,31 +67,61 @@ export default function CartScreen({ navigation }: any) {
       />
 
       {/* Footer */}
-      <View style={styles.footer}>
-        <Text style={styles.total}>Total: ₱{totalPrice}</Text>
+      {items.length > 0 && (
+        <View style={styles.footer}>
+          <View style={styles.totalRow}>
+            <Text style={styles.totalLabel}>Total:</Text>
+            <Text style={styles.total}>₱{totalPrice}</Text>
+          </View>
 
-        <TouchableOpacity
-          style={styles.checkoutBtn}
-          onPress={() => navigation.navigate('Checkout')}
-        >
-          <Ionicons name="cart-outline" size={20} color="#fff" />
-          <Text style={styles.checkoutText}>Checkout</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          <TouchableOpacity
+            style={styles.checkoutBtn}
+            onPress={() => navigation.navigate('Checkout')}
+          >
+            <Ionicons name="checkmark-circle-outline" size={20} color="#fff" />
+            <Text style={styles.checkoutText}>Proceed to Checkout</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     backgroundColor: '#fff',
+  },
+  header: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 12,
+  },
+  itemCount: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
+  },
+  listContent: {
+    padding: 16,
+    paddingBottom: 120,
+    flexGrow: 1,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  emptyText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#888',
   },
   card: {
     backgroundColor: '#f2f2f2',
@@ -86,14 +131,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  itemInfo: {
+    flex: 1,
+    marginRight: 16,
   },
   name: {
     fontSize: 16,
     fontWeight: '600',
+    marginBottom: 4,
   },
   price: {
-    marginTop: 4,
+    marginTop: 2,
     color: '#555',
+    fontSize: 14,
+  },
+  subtotal: {
+    marginTop: 4,
+    fontWeight: '600',
+    fontSize: 14,
   },
   quantityRow: {
     flexDirection: 'row',
@@ -102,17 +163,24 @@ const styles = StyleSheet.create({
   qtyBtn: {
     backgroundColor: '#333',
     borderRadius: 20,
-    padding: 6,
+    padding: 8,
+    width: 34,
+    height: 34,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   qtyPill: {
-    marginHorizontal: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 6,
+    marginHorizontal: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: 20,
     backgroundColor: '#ddd',
+    minWidth: 50,
+    alignItems: 'center',
   },
   qtyText: {
     fontWeight: 'bold',
+    fontSize: 16,
   },
   footer: {
     position: 'absolute',
@@ -124,10 +192,20 @@ const styles = StyleSheet.create({
     borderColor: '#eee',
     backgroundColor: '#fff',
   },
-  total: {
+  totalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  totalLabel: {
     fontSize: 18,
+    fontWeight: '600',
+  },
+  total: {
+    fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 10,
+    color: '#4CAF50',
   },
   checkoutBtn: {
     flexDirection: 'row',
@@ -141,6 +219,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     marginLeft: 8,
+    fontSize: 16,
   },
 });
-
