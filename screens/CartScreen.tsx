@@ -9,16 +9,18 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCart } from '../contexts/CartContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function CartScreen({ navigation }: any) {
   const { cart, addToCart, removeFromCart, totalPrice } = useCart();
+  const { darkMode } = useTheme();
   const items = Object.values(cart);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Your Cart</Text>
-        <Text style={styles.itemCount}>
+    <SafeAreaView style={[styles.container, darkMode && styles.darkBg]}>
+      <View style={[styles.header, darkMode && styles.darkHeader]}>
+        <Text style={[styles.title, darkMode && styles.darkText]}>Your Cart</Text>
+        <Text style={[styles.itemCount, darkMode && styles.darkTextSecondary]}>
           {items.length} {items.length === 1 ? 'item' : 'items'}
         </Text>
       </View>
@@ -29,34 +31,36 @@ export default function CartScreen({ navigation }: any) {
         contentContainerStyle={styles.listContent}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Ionicons name="cart-outline" size={64} color="#ccc" />
-            <Text style={styles.emptyText}>Your cart is empty</Text>
+            <Ionicons name="cart-outline" size={64} color={darkMode ? "#555" : "#ccc"} />
+            <Text style={[styles.emptyText, darkMode && styles.darkText]}>Your cart is empty</Text>
           </View>
         }
         renderItem={({ item }) => (
-          <View style={styles.card}>
+          <View style={[styles.card, darkMode && styles.darkCard]}>
             <View style={styles.itemInfo}>
-              <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.price}>₱{item.price} each</Text>
-              <Text style={styles.subtotal}>
+              <Text style={[styles.name, darkMode && styles.darkText]}>{item.name}</Text>
+              <Text style={[styles.price, darkMode && styles.darkTextSecondary]}>
+                ₱{item.price} each
+              </Text>
+              <Text style={[styles.subtotal, darkMode && styles.darkText]}>
                 Subtotal: ₱{item.price * (item.quantity ?? 0)}
               </Text>
             </View>
 
             <View style={styles.quantityRow}>
               <TouchableOpacity
-                style={styles.qtyBtn}
+                style={[styles.qtyBtn, darkMode && styles.darkQtyBtn]}
                 onPress={() => removeFromCart(item.id)}
               >
                 <Ionicons name="remove" size={18} color="#fff" />
               </TouchableOpacity>
 
-              <View style={styles.qtyPill}>
-                <Text style={styles.qtyText}>{item.quantity}</Text>
+              <View style={[styles.qtyPill, darkMode && styles.darkQtyPill]}>
+                <Text style={[styles.qtyText, darkMode && styles.darkText]}>{item.quantity}</Text>
               </View>
 
               <TouchableOpacity
-                style={styles.qtyBtn}
+                style={[styles.qtyBtn, darkMode && styles.darkQtyBtn]}
                 onPress={() => addToCart(item)}
               >
                 <Ionicons name="add" size={18} color="#fff" />
@@ -68,9 +72,9 @@ export default function CartScreen({ navigation }: any) {
 
       {/* Footer */}
       {items.length > 0 && (
-        <View style={styles.footer}>
+        <View style={[styles.footer, darkMode && styles.darkFooter]}>
           <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Total:</Text>
+            <Text style={[styles.totalLabel, darkMode && styles.darkText]}>Total:</Text>
             <Text style={styles.total}>₱{totalPrice}</Text>
           </View>
 
@@ -92,11 +96,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  darkBg: {
+    backgroundColor: '#121212',
+  },
   header: {
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
+  },
+  darkHeader: {
+    borderBottomColor: '#333',
   },
   title: {
     fontSize: 22,
@@ -137,6 +147,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
+  darkCard: {
+    backgroundColor: '#1e1e1e',
+  },
   itemInfo: {
     flex: 1,
     marginRight: 16,
@@ -169,6 +182,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  darkQtyBtn: {
+    backgroundColor: '#555',
+  },
   qtyPill: {
     marginHorizontal: 12,
     paddingHorizontal: 16,
@@ -177,6 +193,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#ddd',
     minWidth: 50,
     alignItems: 'center',
+  },
+  darkQtyPill: {
+    backgroundColor: '#333',
   },
   qtyText: {
     fontWeight: 'bold',
@@ -191,6 +210,10 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: '#eee',
     backgroundColor: '#fff',
+  },
+  darkFooter: {
+    backgroundColor: '#1e1e1e',
+    borderColor: '#333',
   },
   totalRow: {
     flexDirection: 'row',
@@ -220,5 +243,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 8,
     fontSize: 16,
+  },
+  darkText: {
+    color: '#fff',
+  },
+  darkTextSecondary: {
+    color: '#aaa',
   },
 });

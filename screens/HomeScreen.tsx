@@ -26,7 +26,7 @@ export default function HomeScreen({ navigation }: any) {
   return (
     <SafeAreaView style={[styles.container, darkMode && styles.darkBg]}>
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, darkMode && styles.darkHeader]}>
         <Text style={[styles.title, darkMode && styles.darkText]}>
           Products
         </Text>
@@ -52,7 +52,7 @@ export default function HomeScreen({ navigation }: any) {
               <Text style={[styles.name, darkMode && styles.darkText]}>
                 {item.name}
               </Text>
-              <Text style={[styles.price, darkMode && styles.darkText]}>
+              <Text style={[styles.price, darkMode && styles.darkTextSecondary]}>
                 ₱{item.price}
               </Text>
             </View>
@@ -69,7 +69,7 @@ export default function HomeScreen({ navigation }: any) {
       />
 
       {/* Go to Cart */}
-      <View style={styles.footer}>
+      <View style={[styles.footer, darkMode && styles.darkFooter]}>
         <TouchableOpacity
           style={styles.cartBtn}
           onPress={() => navigation.navigate('Cart')}
@@ -98,6 +98,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
+  },
+  darkHeader: {
+    borderBottomColor: '#333',
   },
   themeToggle: {
     flexDirection: 'row',
@@ -161,6 +164,10 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#eee',
   },
+  darkFooter: {
+    backgroundColor: '#1e1e1e',
+    borderTopColor: '#333',
+  },
   cartBtn: {
     backgroundColor: '#2196F3',
     paddingVertical: 14,
@@ -177,5 +184,8 @@ const styles = StyleSheet.create({
   },
   darkText: {
     color: '#fff',
+  },
+  darkTextSecondary: {
+    color: '#aaa',
   },
 });
