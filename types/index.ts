@@ -7,6 +7,7 @@ export interface Product {
     name: string;
     price: number;
     quantity?: number;
+    image?: string;
 }
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);

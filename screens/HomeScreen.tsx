@@ -7,16 +7,35 @@ import {
   Switch,
   StyleSheet,
   SafeAreaView,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Product } from '../types';
 import { useCart } from '../contexts/CartContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { styles } from './HomeScreen.styles';
+
+// Import local images
+import appleImage from '../assets/images/apple.png';
+import bananaImage from '../assets/images/banana.png';
+import orangeImage from '../assets/images/orange.png';
+import mangoImage from '../assets/images/mango.png';
+import strawberryImage from '../assets/images/strawberry.png';
+import grapesImage from '../assets/images/grapes.png';
+import watermelonImage from '../assets/images/watermelon.png';
+import pineappleImage from '../assets/images/pineapple.png';
+import berriesImage from '../assets/images/berries.png';
 
 const PRODUCTS: Product[] = [
-  { id: '1', name: 'Apple', price: 20 },
-  { id: '2', name: 'Banana', price: 10 },
-  { id: '3', name: 'Orange', price: 15 },
+  { id: '1', name: 'Apple', price: 20, image: appleImage },
+  { id: '2', name: 'Banana', price: 10, image: bananaImage },
+  { id: '3', name: 'Orange', price: 15, image: orangeImage },
+  { id: '4', name: 'Mango', price: 25, image: mangoImage },
+  { id: '5', name: 'Strawberry', price: 30, image: strawberryImage },
+  { id: '6', name: 'Grapes', price: 35, image: grapesImage },
+  { id: '7', name: 'Watermelon', price: 40, image: watermelonImage },
+  { id: '8', name: 'Pineapple', price: 28, image: pineappleImage },
+  { id: '9', name: 'Berries', price: 28, image: berriesImage },
 ];
 
 export default function HomeScreen({ navigation }: any) {
@@ -28,7 +47,7 @@ export default function HomeScreen({ navigation }: any) {
       {/* Header */}
       <View style={[styles.header, darkMode && styles.darkHeader]}>
         <Text style={[styles.title, darkMode && styles.darkText]}>
-          Products
+          Fruits
         </Text>
         <View style={styles.themeToggle}>
           <Ionicons 
@@ -41,28 +60,40 @@ export default function HomeScreen({ navigation }: any) {
         </View>
       </View>
 
-      {/* Product List */}
+      {/* Product Grid */}
       <FlatList
         data={PRODUCTS}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={styles.gridContent}
+        numColumns={3}
+        columnWrapperStyle={styles.columnWrapper}
         renderItem={({ item }) => (
-          <View style={[styles.card, darkMode && styles.darkCard]}>
-            <View style={styles.productInfo}>
-              <Text style={[styles.name, darkMode && styles.darkText]}>
+          <View style={[styles.gridCard, darkMode && styles.darkGridCard]}>
+            {/* Product Image */}
+            <Image
+              source={typeof item.image === 'string' ? { uri: item.image } : item.image}
+              style={styles.productImage}
+            />
+            
+            {/* Product Info */}
+            <View style={styles.gridProductInfo}>
+              <Text 
+                style={[styles.gridName, darkMode && styles.darkText]}
+                numberOfLines={2}
+              >
                 {item.name}
               </Text>
-              <Text style={[styles.price, darkMode && styles.darkTextSecondary]}>
+              <Text style={[styles.gridPrice, darkMode && styles.darkTextSecondary]}>
                 ₱{item.price}
               </Text>
             </View>
 
+            {/* Add to Cart Button */}
             <TouchableOpacity
-              style={styles.addBtn}
+              style={styles.gridAddBtn}
               onPress={() => addToCart(item)}
             >
-              <Ionicons name="cart-outline" size={18} color="#fff" />
-              <Text style={styles.btnText}>Add to Cart</Text>
+              <Ionicons name="cart-outline" size={16} color="#fff" />
             </TouchableOpacity>
           </View>
         )}
@@ -81,111 +112,3 @@ export default function HomeScreen({ navigation }: any) {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  darkBg: {
-    backgroundColor: '#121212',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  darkHeader: {
-    borderBottomColor: '#333',
-  },
-  themeToggle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: 'bold',
-  },
-  listContent: {
-    padding: 16,
-    paddingBottom: 100,
-  },
-  card: {
-    backgroundColor: '#f2f2f2',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  darkCard: {
-    backgroundColor: '#1e1e1e',
-  },
-  productInfo: {
-    marginBottom: 12,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  price: {
-    fontSize: 16,
-    color: '#555',
-  },
-  addBtn: {
-    backgroundColor: '#4CAF50',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  btnText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    marginLeft: 6,
-  },
-  footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 16,
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-  },
-  darkFooter: {
-    backgroundColor: '#1e1e1e',
-    borderTopColor: '#333',
-  },
-  cartBtn: {
-    backgroundColor: '#2196F3',
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  cartBtnText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 8,
-  },
-  darkText: {
-    color: '#fff',
-  },
-  darkTextSecondary: {
-    color: '#aaa',
-  },
-});
